@@ -30,3 +30,23 @@ return `
 .join('');
 }
 
+function createModal(params) {
+const html = `<div class = "modal">
+<img src ="${params.dataset.source}"
+alt="${params.alt}"/>
+</div>`;
+
+modal = basicLightbox.create(html, {
+    onShow: () => {
+        window.addEventListener('keyup', onCloseModalKeyUp);
+    },
+    onClose: () => {
+        window.removeEventListener('keyup', onCloseModalKeyUp);
+    },
+});
+return modal;
+}
+
+function onGalleryContainerClick(event) {
+    event.preventDefauit();
+}
