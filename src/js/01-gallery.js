@@ -3,50 +3,62 @@ import { galleryItems } from './gallery-items.js';
 
 console.log(galleryItems);
 
-const galleryList = document.querySelector('.gallery');
-const cardsMarcup = cardsGallery(galleryItems);
+const galleryList = document.querySelector(".gallery");
+const cardsItem = createCardsElement(galleryItems);
 
-galleryList.insertAdjacentHTML('beforeend', cardsMarcup);
+galleryList.insertAdjacentHTML("beforeend", cardsItem);
 
-galleryList.addEventListener('click', onGalleryContainerClick);
-
-
-function cardsGallery (gallery) {
-    return galleryItems
-    .map((img) => {
+function createCardsElement(gallery) {
+    return gallery
+    .map(({ preview, original, description }) => {
 return `
 <div class="gallery__item">
-<a class="gallery__link" href=${img.original}>
-    <img
-    class="gallery__image"
-    src=${img.preview}
-    data-source=${img.original}
-    alt=${img.description}
-    />
+<a class="gallery__link" href="${original}">
+<img
+    class="gallery_image"
+    src="${preview}"
+    data-source="${original}"
+    alt="${description}"
+/>
 </a>
-</div>
-`;
-})
-.join('');
-}
-
-function createModal(params) {
-const html = `<div class = "modal">
-<img src ="${params.dataset.source}"
-alt="${params.alt}"/>
 </div>`;
-
-modal = basicLightbox.create(html, {
-    onShow: () => {
-        window.addEventListener('keyup', onCloseModalKeyUp);
-    },
-    onClose: () => {
-        window.removeEventListener('keyup', onCloseModalKeyUp);
-    },
-});
-return modal;
+    })
+    .join("");
 }
+// console.log(cardsItem);
 
-function onGalleryContainerClick(event) {
-    event.preventDefauit();
+galleryList.addEventListener("click", onGalleryClick);
+
+function onGalleryClick(event) {
+    if (event.target.nodeName !== "IMG") {
+        return;
+    }
+
+event.preventDefault();
+
+const onCloseModal = (event) => {
+    const ESC_KEY = "Escape";
+
+    if (event.code === ESC_KEY) {
+        instance.close();
+    }
+};
+
+const instance = basicLightbox.create(
+    `
+    <img src="${event.target.dataset.source}" width="800" height="600">
+    `,
+    {
+        onShow: () => {
+        window.addEventListener("keydown", onCloseModal);
+    },
+
+    onclose: () => {
+        window.removeEventListener("keydown", onCloseModal);
+    },
+    }
+);
+
+    instance.show();
 }
+console.log(galleryItems);
